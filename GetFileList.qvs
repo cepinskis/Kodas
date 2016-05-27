@@ -1,0 +1,29 @@
+SUB GetFileList(Root, v_include_subdirectory)
+
+	SET v_concatenate = '';
+	
+	file_list:
+	LOAD '' as [file_name]
+	AutoGenerate(0);
+
+	FOR EACH FileExtension in 'qvd'
+	
+    	FOR EACH FoundFile in FileList(Root & '\*.' & FileExtension)
+    	
+        	file_list:
+            LOAD '$(FoundFile)' as [file_name]
+            AutoGenerate(1);
+            
+			SET v_concatenate = Concatenate;
+			
+        NEXT FoundFile
+        
+    NEXT FileExtension
+    
+    IF $(v_include_subdirectory) = 1 then
+	    FOR Each SubDirectory IN DirList(Root & '\*' )
+	    	CALL GetFileList(SubDirectory, $(v_include_subdirectory))
+	    NEXT SubDirectory
+	ENDIF
+    
+END SUB
